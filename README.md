@@ -1,6 +1,9 @@
 <div align="center">
 
-# Makvion
+<h1>
+  <img src="public/logo-green.png" alt="" width="44" height="48" />
+  Makvion
+</h1>
 
 **Official website of Makvion Technologies — websites, SaaS, Android apps and games, built in Pune, India.**
 
