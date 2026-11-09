@@ -40,3 +40,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 !.env.example
+
+# Local AI tooling
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.cursor/
+.claude/
+.cursorrules
+.windsurfrules
+.github/copilot-instructions.md
+**/copilot-instructions.md
