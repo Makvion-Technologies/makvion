@@ -1,7 +1,7 @@
 <div align="center">
 
-<h1>
-  <img src="public/logo-green.png" alt="" width="44" height="48" />
+<h1 align="center">
+  <img src=".github/assets/readme-logo.png" alt="" height="48" />
   Makvion
 </h1>
 
