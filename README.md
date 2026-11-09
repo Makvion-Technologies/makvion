@@ -1,80 +1,97 @@
-# Makvion — marketing website
+<div align="center">
 
-The marketing site for **Makvion Technologies** (makvion.com): client services (websites, web apps/SaaS, mobile apps, redesign & speed, maintenance), industries, concept work, and Makvion's own products (Websites With Punch, Lost Seahorse).
+# Makvion
 
-**Stack:** Next.js 16 (App Router, Turbopack) · TypeScript · Tailwind CSS v4 · `next/font` (Sora + Inter) · `next/image`. Light theme only. Almost every page is statically prerendered.
+**Official website of Makvion Technologies — websites, SaaS, Android apps and games, built in Pune, India.**
+
+[makvion.com](https://makvion.com)
+
+</div>
+
+## About
+
+This repository is the marketing site for Makvion Technologies LLP. It presents our services, process, industries we work with, selected work, and ways to get in touch. Content for most pages lives in a single config module so copy and structure stay easy to update.
+
+## Features
+
+- Marketing pages for services, work, process, about, industries and contact
+- Contact form with validation, honeypot and per-IP rate limiting, delivered by email
+- SEO foundations: sitemap, robots, Open Graph images, JSON-LD, web app manifest
+- WhatsApp and phone CTAs for enquiries
+- Responsive layout with the Makvion brand colours and Plus Jakarta Sans
+- Photo credits documented for Unsplash assets
+
+## Tech stack
+
+| Layer | Stack |
+| --- | --- |
+| Web app | Next.js 16 (App Router), React 19, TypeScript |
+| Styling | Tailwind CSS v4 |
+| Fonts | Plus Jakarta Sans via `next/font` |
+| Email | Resend (contact form) |
+| Analytics | Vercel Analytics |
+| Hosting | Vercel |
 
 ## Getting started
 
+### Prerequisites
+
+- Node.js 20+
+- npm
+
+### Install
+
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev      # http://localhost:3000
-npm run build    # production build
-npm run lint
 ```
 
-## Where things live
+## Environment
 
-| Path | What it is |
-|---|---|
-| `src/lib/site.ts` | **All content**: services and prices, packages, process, industries, products, concepts, FAQs, contact email. Add an industry, product or concept by appending to its array. |
-| `src/components/sections.tsx` | Reusable page sections (services grid, pricing, FAQ, CTA band, etc.) |
-| `src/components/ui.tsx` | Buttons, headings, icons, container |
-| `src/app/*/page.tsx` | Pages: `/`, `/services`, `/industries`, `/work`, `/products`, `/about`, `/contact`, `/privacy`, `/terms`, plus the 404 page |
-| `src/app/api/contact/route.ts` | Contact form endpoint: size limit, per-IP rate limit, sends via Resend |
-| `src/lib/contact.ts` | Contact validation, honeypot and email templates (unit tested by `npm run test:contact`) |
-| `src/app/sitemap.ts`, `robots.ts`, `opengraph-image.tsx`, `icon.png` | SEO, social card and favicon |
-| `public/images/` | Unsplash photos. See `public/images/CREDITS.md` |
-| `scripts/screenshots.mjs` | Full-page Playwright screenshots (desktop 1440 / mobile 390) |
+Copy `.env.example` to `.env.local`:
 
-## Brand
+| Variable | Meaning |
+| --- | --- |
+| `RESEND_API_KEY` | Resend API key (required for the contact form to send mail) |
+| `RESEND_FROM_EMAIL` | From address on a domain verified in Resend |
+| `CONTACT_TO_EMAIL` | Inbox that receives enquiries (defaults to contact@makvion.com) |
+| `RESEND_SEND_CONFIRMATION` | Set to `true` to also email the visitor a short confirmation (default off) |
 
-- Green `#2C7469` (from the Makvion logo) is used as `brand-500`, with darker shades for text and buttons.
-- Gold `#C69141` (from the footer logo) is used as `gold-400`.
-- Ink `#13201E`, cream `#FAF8F3`, line `#E7E3D9`.
-- Fonts: Sora for headings, Inter for UI and body text.
-
-## Contact form (Resend)
-
-Enquiries are emailed through [Resend](https://resend.com). Copy `.env.example` to `.env.local` for local testing.
-
-| Variable | Required | Purpose |
-|---|---|---|
-| `RESEND_API_KEY` | Yes | Resend API key. Without it the form shows an error and asks visitors to email directly (it never fakes success). |
-| `RESEND_FROM_EMAIL` | Recommended | Sender, e.g. `Makvion <noreply@makvion.com>`. The domain must be verified in Resend. |
-| `CONTACT_TO_EMAIL` | No | Where enquiries go. Defaults to `contact@makvion.com`. |
-| `RESEND_SEND_CONFIRMATION` | No | `true` sends the visitor a short confirmation email. Default off. |
-
-Protection: honeypot field, server-side validation and length limits, 20 KB body limit, and a best-effort in-memory rate limit (5 per 10 minutes per IP, per server instance). Replies go straight to the visitor via `reply_to`.
-
-## Deploy to Vercel
-
-1. Push this repo to GitHub and import it at [vercel.com/new](https://vercel.com/new) (framework: Next.js, defaults are fine).
-2. In Resend, add the domain `makvion.com` and add the DNS records it shows (SPF/DKIM) at your DNS provider. Wait until it shows **Verified**.
-3. Create a Resend API key (sending access only).
-4. In Vercel → Project → Settings → Environment Variables, add `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and optionally `CONTACT_TO_EMAIL` and `RESEND_SEND_CONFIRMATION`, for Production (and Preview if wanted). Redeploy.
-5. In Vercel → Domains, add `makvion.com` and `www.makvion.com` and follow the DNS instructions. The canonical URL is `https://makvion.com` (set in `src/lib/site.ts`).
-6. After launch: submit a test enquiry on `/contact`, then submit `https://makvion.com/sitemap.xml` in Google Search Console.
-
-## Checks
+## Scripts
 
 ```bash
-npm run lint && npm run build
-npm run test:contact                          # contact logic with a mocked Resend
-npx next start -p 3457 & node scripts/audit.mjs   # crawl links, assets, mobile menu, form error state
+npm run dev            # Next.js development server
+npm run build          # production build
+npm run start          # serve the production build
+npm run lint           # ESLint
+npm run test:contact   # contact form helper tests
 ```
 
-## Before launch (founder input)
+## Project structure
 
-- [ ] Business address (and optionally phone/WhatsApp, LinkedIn): `site.address`, `site.linkedin` in `src/lib/site.ts`. Also needed for US cold-email compliance.
-- Hours are set in `hours` / `timezones` in `src/lib/site.ts` (Mon–Fri, 9am–6pm ET).
-- [ ] Confirm Care Plus terms (3 edit hours/month, next-business-day replies).
-- [ ] Have the Privacy and Terms pages reviewed.
-- [ ] Optional: analytics (e.g. Vercel Analytics).
-
-## Screenshots
-
-```bash
-npm run build && npx next start -p 3457 &
-node scripts/screenshots.mjs ../makvion-shots
 ```
+src/app/           App Router pages, SEO images, contact API route
+src/components/    Layout, UI, page sections, contact form
+src/lib/           Site content (site.ts), SEO helpers, contact email
+public/images/     Photos and logos (see CREDITS.md)
+scripts/           Playwright screenshots and contact test helper
+```
+
+## Deployment
+
+Deploy to [Vercel](https://vercel.com) and set the `RESEND_*` / `CONTACT_TO_EMAIL` environment variables in the project settings. The production domain is [makvion.com](https://makvion.com).
+
+## Image credits
+
+Stock photos are listed in [`public/images/CREDITS.md`](public/images/CREDITS.md). Logos under `public/` are Makvion’s own assets.
+
+## Contributing
+
+Internal contributions follow the Makvion Technologies guide:
+
+[CONTRIBUTING.md](https://github.com/Makvion-Technologies/.github/blob/main/CONTRIBUTING.md)
+
+## License
+
+© Makvion Technologies LLP. All rights reserved.
