@@ -14,6 +14,7 @@ export async function renderOg(kicker: string, title: string, sub = "Websites, o
         <div style={{ width: 24, height: "100%", background: "#2c7469", display: "flex" }} />
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "64px 72px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- next/og ImageResponse requires a plain <img> */}
             <img src={src} width={80} height={80} alt="" />
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ fontSize: 42, fontWeight: 700, color: "#13201e" }}>Makvion</div>

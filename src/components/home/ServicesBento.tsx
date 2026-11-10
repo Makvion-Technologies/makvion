@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowUpRight, Check, MapPin, MessageCircle, Search, ShieldCheck, Smartphone } from "lucide-react";
+import { Check, MapPin, MessageCircle, Search, ShieldCheck, Smartphone } from "lucide-react";
 import type { ReactNode } from "react";
 
 function Tag({ children, dark = false }: { children: ReactNode; dark?: boolean }) {

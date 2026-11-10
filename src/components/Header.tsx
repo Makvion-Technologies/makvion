@@ -7,10 +7,14 @@ import { Arrow, Button } from "./ui";
 import { nav } from "@/lib/site";
 
 export function Header() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const pathname = usePathname();
-  useEffect(() => setOpen(false), [pathname]);
+  const [menuPath, setMenuPath] = useState(pathname);
+  if (menuPath !== pathname) {
+    setMenuPath(pathname);
+    setOpen(false);
+  }
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 8);
     on(); window.addEventListener("scroll", on, { passive: true });
