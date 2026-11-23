@@ -1,12 +1,15 @@
 """
 api/chat.py - Makvion chatbot endpoint
-(Chatbot 2: Gemini + bot rules, Chatbot 3: limits and safety)
+(Chatbot 2: Gemini + rules, Chatbot 3: limits and safety,
+ Chatbot 4: error handling and Groq backup)
 
 POST /api/chat
   body:    {"message": "Hello"}
   returns: {"reply": "..."}
 
-Needs GEMINI_API_KEY in .env.local (free key from Google AI Studio).
+Keys (in .env.local, never in the code):
+  GEMINI_API_KEY  - free key from Google AI Studio
+  GROQ_API_KEY    - optional backup, free key from console.groq.com
 Uses only the Python standard library.
 We do not save chats and we do not store personal data.
 """
@@ -27,6 +30,9 @@ GEMINI_URL = (
     f"{GEMINI_MODEL}:generateContent"
 )
 
+GROQ_MODEL = "openai/gpt-oss-20b"
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+
 # <repo root>/chatbot/knowledge.md
 KNOWLEDGE_PATH = Path(__file__).resolve().parent.parent / "chatbot" / "knowledge.md"
 
@@ -37,6 +43,12 @@ MAX_MESSAGE_CHARS = 500      # longest message we accept
 MAX_BODY_BYTES = 10_000      # refuse huge requests before reading them
 RATE_LIMIT_MAX = 10          # messages allowed ...
 RATE_LIMIT_WINDOW = 60       # ... per this many seconds, per visitor
+
+# Shown to the visitor when both Gemini and Groq fail.
+FALLBACK_REPLY = (
+    "Sorry, we cannot answer right now. Please visit our Contact page "
+    "or message us on WhatsApp and we will be happy to help."
+)
 
 # Used only until chatbot/knowledge.md is written (Part 2), so we are not blocked.
 PLACEHOLDER_KNOWLEDGE = (
@@ -109,6 +121,9 @@ def load_knowledge() -> str:
         return PLACEHOLDER_KNOWLEDGE
 
 
+# ---------------------------------------------------------------------------
+# The AI providers
+# ---------------------------------------------------------------------------
 def ask_gemini(message: str) -> str:
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -128,7 +143,62 @@ def ask_gemini(message: str) -> str:
     with urllib.request.urlopen(req, timeout=20) as resp:
         data = json.loads(resp.read().decode("utf-8"))
 
-    return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+    text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+    if not text:
+        raise ValueError("Gemini returned an empty reply")
+    return text
+
+
+def ask_groq(message: str) -> str:
+    """Backup AI. Only used when Gemini fails."""
+    api_key = os.environ.get("GROQ_API_KEY")
+    if not api_key:
+        raise RuntimeError("GROQ_API_KEY is not set")
+
+    payload = {
+        "model": GROQ_MODEL,
+        "messages": [
+            {"role": "system", "content": BOT_RULES + load_knowledge()},
+            {"role": "user", "content": message},
+        ],
+        "temperature": 0.3,
+        "max_completion_tokens": 800,
+        "reasoning_effort": "low",
+    }
+    req = urllib.request.Request(
+        GROQ_URL,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+            "User-Agent": "makvion-chatbot/1.0",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        data = json.loads(resp.read().decode("utf-8"))
+
+    text = data["choices"][0]["message"]["content"].strip()
+    if not text:
+        raise ValueError("Groq returned an empty reply")
+    return text
+
+
+# Everything that can go wrong with a provider: no internet, timeout, limit
+# reached, missing key, unexpected reply.
+AI_ERRORS = (OSError, RuntimeError, KeyError, IndexError, ValueError)
+
+
+def ask_ai(message: str) -> str:
+    """Try Gemini first, then Groq. If both fail, return a friendly message.
+    Raw errors and keys are never shown to the visitor."""
+    for name, ask in (("gemini", ask_gemini), ("groq", ask_groq)):
+        try:
+            return ask(message)
+        except AI_ERRORS as exc:
+            # log only the error type, never the message, the key or the details
+            print(f"{name} failed:", type(exc).__name__, getattr(exc, "code", ""))
+    return FALLBACK_REPLY
 
 
 class handler(BaseHTTPRequestHandler):
@@ -186,11 +256,7 @@ class handler(BaseHTTPRequestHandler):
             return self._send(413, {"error": "Your message is too long. "
                                              f"Please keep it under {MAX_MESSAGE_CHARS} characters."})
 
-        # 4. Ask Gemini. We never log or save the message.
-        try:
-            reply = ask_gemini(message)
-        except (OSError, RuntimeError, KeyError, IndexError, ValueError) as exc:
-            print("chat error:", type(exc).__name__)  # full error handling comes in #11
-            return self._send(500, {"error": "Could not get a reply right now"})
-
+        # 4. Get an answer: Gemini, then Groq, then a friendly fallback.
+        #    We never log or save the message.
+        reply = ask_ai(message)
         self._send(200, {"reply": reply})
