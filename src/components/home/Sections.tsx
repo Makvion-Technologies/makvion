@@ -160,33 +160,31 @@ export function WorkPanels({ header = true, detailed = false }: { header?: boole
       {concepts.map((c, i) => {
         const p = palettes[i % palettes.length];
         return (
-          <Link key={c.slug} id={detailed ? c.slug : undefined} href={detailed ? "/contact" : `/work#${c.slug}`} className={`group block scroll-mt-20 overflow-hidden ${p.bg}`}>
+          <div key={c.slug} id={detailed ? c.slug : undefined} className={`block scroll-mt-20 overflow-hidden ${p.bg}`}>
             <Container className={`grid items-center gap-10 py-16 sm:py-24 lg:grid-cols-12 ${p.text}`}>
               <div className={`lg:col-span-4 ${i % 2 ? "lg:order-2" : ""}`}>
                 <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ${p.chip}`}>Concept · {c.industry}</span>
                 <h3 className="font-display mt-6 text-[2.2rem] font-extrabold leading-[1] tracking-[-0.03em] sm:text-[3.2rem]">{c.client}</h3>
                 <p className={`mt-4 text-lg leading-relaxed ${p.sub}`}>{c.summary}</p>
                 {detailed && <ul className="mt-6 space-y-2">{c.highlights.map((h) => <li key={h} className="flex items-center gap-2.5 font-medium"><CheckIcon className="h-4 w-4 shrink-0" strokeWidth={3} />{h}</li>)}</ul>}
-                <span className="mt-8 inline-flex items-center gap-2 font-semibold">{detailed ? "Get a concept like this" : "View concept"} <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></span>
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+                  <Button href={c.url} external size="lg" variant={i === 2 ? "primary" : "gold"}>Visit the live site <ArrowUpRight className="h-5 w-5" aria-hidden /><span className="sr-only"> of {c.client} (opens in a new tab)</span></Button>
+                  <Link href={detailed ? "/contact" : `/work#${c.slug}`} className="inline-flex items-center gap-2 font-semibold underline-offset-4 hover:underline">{detailed ? "Get a concept like this" : "View concept"} <ArrowRight className="h-5 w-5" aria-hidden /></Link>
+                </div>
               </div>
               <div className={`lg:col-span-8 ${i % 2 ? "lg:order-1" : ""}`}>
-                <div className="parallax relative overflow-hidden rounded-[1.25rem] shadow-[0_50px_100px_-40px_rgba(0,0,0,.6)] ring-1 ring-black/10">
+                <a href={c.url} target="_blank" rel="noopener noreferrer" tabIndex={-1} aria-hidden="true" className="parallax relative block overflow-hidden rounded-[1.25rem] shadow-[0_50px_100px_-40px_rgba(0,0,0,.6)] ring-1 ring-black/10">
                   <div className="flex items-center gap-1.5 bg-white/95 px-4 py-2.5">
                     <span className="h-2 w-2 rounded-full bg-[#e8806f]" /><span className="h-2 w-2 rounded-full bg-gold-300" /><span className="h-2 w-2 rounded-full bg-brand-300" />
                     <span className="ml-auto rounded-full bg-gold-100 px-2 py-0.5 text-[0.65rem] font-semibold text-gold-700">Concept</span>
                   </div>
-                  <div className="relative aspect-[16/9]">
-                    <Image src={c.image} alt={`${c.client} concept homepage`} fill sizes="(min-width:1024px) 780px, 100vw" loading="eager" className="object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.04]" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/25 to-transparent" />
-                    <div className="absolute inset-y-0 left-0 flex max-w-md flex-col justify-center p-6 text-white sm:p-10">
-                      <p className="font-display text-xl font-extrabold leading-tight sm:text-[2.2rem]">{c.hero}</p>
-                      <span className="mt-4 inline-block w-fit rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-brand-700">{c.cta}</span>
-                    </div>
+                  <div className="relative aspect-[16/10] bg-white">
+                    <Image src={c.image} alt={`${c.client} website homepage, desktop screenshot`} fill sizes="(min-width:1024px) 780px, 100vw" loading="eager" className="object-cover object-top" />
                   </div>
-                </div>
+                </a>
               </div>
             </Container>
-          </Link>
+          </div>
         );
       })}
     </section>

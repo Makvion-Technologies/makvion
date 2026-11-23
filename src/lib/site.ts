@@ -232,10 +232,15 @@ export type Concept = {
   industry: string;
   title: string;
   summary: string;
+  /** Desktop screenshot (1440×900 at 2x) of the live site's homepage. */
   image: string;
+  /** Phone screenshot (390 wide at 2x) of the live site's homepage. */
+  mobileImage: string;
   hero: string;
   cta: string;
   highlights: string[];
+  /** Path of the live site hosted on makvion.com, opened in a new tab. */
+  url: string;
 };
 
 export const concepts: Concept[] = [
@@ -246,10 +251,12 @@ export const concepts: Concept[] = [
     title: "A calm, trustworthy clinic site with appointments front and centre",
     summary:
       "A fictional family dental clinic. Nervous patients want reassurance, clear treatment information and an easy way to book, so the site leads with friendly faces, treatment pages and a one-tap appointment request.",
-    image: "/images/case-dentist-xray.jpg",
+    image: "/images/work/dental-home.webp",
+    mobileImage: "/images/work/dental-mobile.webp",
     hero: "Gentle family dentistry. Book your visit in two taps.",
     cta: "Book appointment",
     highlights: ["Appointment request flow", "Treatment pages", "WhatsApp & call buttons"],
+    url: "/sahyadri-smiles",
   },
   {
     slug: "restaurant",
@@ -258,10 +265,12 @@ export const concepts: Concept[] = [
     title: "A warm restaurant site where the menu loads in a blink",
     summary:
       "A fictional neighbourhood restaurant. Diners decide in seconds, so the menu, timings, Google Maps and the table-booking button are all one tap away on mobile.",
-    image: "/images/restaurant.jpg",
+    image: "/images/work/restaurant-home.webp",
+    mobileImage: "/images/work/restaurant-mobile.webp",
     hero: "Slow-cooked classics, warm rooms, open till late.",
     cta: "Reserve a table",
     highlights: ["Phone-friendly menu", "Table booking & ordering links", "Timings & map at a glance"],
+    url: "/kesar-kitchen",
   },
   {
     slug: "store",
@@ -270,10 +279,12 @@ export const concepts: Concept[] = [
     title: "A D2C store with a checkout that just works",
     summary:
       "A fictional handloom clothing brand. Shoppers want to see the fabric up close and pay the way they like, so product pages are image-first and checkout supports UPI, cards and COD.",
-    image: "/images/ecommerce.jpg",
+    image: "/images/work/store-home.webp",
+    mobileImage: "/images/work/store-mobile.webp",
     hero: "Handwoven, made to last. Free shipping across India.",
     cta: "Shop the collection",
     highlights: ["Razorpay / UPI checkout", "Image-first product pages", "Order & stock admin"],
+    url: "/indigo-loom",
   },
 ];
 

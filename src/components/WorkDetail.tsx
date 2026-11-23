@@ -56,34 +56,22 @@ const details: Record<string, Detail> = {
 
 function Desktop({ c }: { c: C }) {
   return (
-    <div className="group overflow-hidden rounded-[1.25rem] bg-white shadow-[0_50px_100px_-45px_rgba(15,41,37,.55)] ring-1 ring-black/10">
+    <div className="overflow-hidden rounded-[1.25rem] bg-white shadow-[0_50px_100px_-45px_rgba(15,41,37,.55)] ring-1 ring-black/10">
       <div className="flex items-center gap-1.5 border-b border-line bg-cream px-4 py-2.5">
         <span className="h-2 w-2 rounded-full bg-[#e8806f]" /><span className="h-2 w-2 rounded-full bg-gold-300" /><span className="h-2 w-2 rounded-full bg-brand-300" />
         <span className="ml-3 hidden truncate rounded-md bg-white px-3 py-0.5 text-[11px] text-muted ring-1 ring-line sm:inline">{c.client.toLowerCase().replace(/\s+/g, "")}.in</span>
       </div>
-      <div className="relative aspect-[16/10] overflow-hidden">
-        <Image src={c.image} alt={`${c.client} concept homepage, desktop view`} fill sizes="(min-width:1024px) 820px, 100vw" className="object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.04]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
-        <div className="absolute inset-y-0 left-0 flex max-w-[62%] flex-col justify-center p-5 text-white sm:max-w-md sm:p-10">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/70">{c.client}</p>
-          <p className="font-display mt-2 text-base font-extrabold leading-tight sm:mt-3 sm:text-[2.1rem]">{c.hero}</p>
-          <span className="mt-5 inline-block w-fit rounded-lg bg-white px-3.5 py-2 text-xs font-semibold text-brand-700">{c.cta}</span>
-        </div>
+      <div className="relative aspect-[16/10] overflow-hidden bg-white">
+        <Image src={c.image} alt={`${c.client} website homepage, desktop screenshot`} fill sizes="(min-width:1024px) 820px, 100vw" className="object-cover object-top" />
       </div>
     </div>
   );
 }
 function PhoneView({ c }: { c: C }) {
   return (
-    <div className="group w-[120px] overflow-hidden rounded-[1.5rem] border-[5px] sm:rounded-[2rem] sm:border-[6px] border-ink bg-white shadow-[0_40px_70px_-30px_rgba(15,41,37,.7)] sm:w-[210px]">
-      <div className="relative aspect-[9/17] overflow-hidden">
-        <Image src={c.image} alt={`${c.client} concept homepage, phone view`} fill sizes="210px" className="object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.04]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        <div className="absolute inset-x-0 top-0 flex items-center justify-between px-3 py-2.5 text-[9px] font-semibold text-white"><span>{c.client}</span><span className="h-1.5 w-6 rounded-full bg-white/70" /></div>
-        <div className="absolute inset-x-0 bottom-0 p-3.5 text-white">
-          <p className="font-display text-[11px] font-extrabold sm:text-[15px] leading-tight">{c.hero}</p>
-          <span className="mt-3 block rounded-lg bg-white py-2 text-center text-[10px] font-bold text-brand-700">{c.cta}</span>
-        </div>
+    <div className="w-[120px] overflow-hidden rounded-[1.5rem] border-[5px] sm:rounded-[2rem] sm:border-[6px] border-ink bg-white shadow-[0_40px_70px_-30px_rgba(15,41,37,.7)] sm:w-[210px]">
+      <div className="relative aspect-[9/17] overflow-hidden bg-white">
+        <Image src={c.mobileImage} alt={`${c.client} website homepage, phone screenshot`} fill sizes="(min-width:640px) 210px, 120px" className="object-cover object-top" />
       </div>
     </div>
   );
@@ -106,6 +94,7 @@ function Intro({ c, n, dark }: { c: C; n: number; dark?: boolean }) {
       <p className={`text-sm font-semibold ${dark ? "text-white/60" : "text-muted"}`}>{String(n).padStart(2, "0")} · Concept project · {c.industry}</p>
       <h2 className="font-display mt-4 text-[2.4rem] font-extrabold leading-[1] tracking-[-0.035em] sm:text-[3.6rem]">{c.client}</h2>
       <p className={`mt-5 max-w-xl text-lg leading-relaxed ${dark ? "text-white/75" : "text-muted"}`}>{c.title}.</p>
+      <Button href={c.url} external size="lg" variant={dark ? "gold" : "primary"} className="mt-7">Visit the live site <Arrow /><span className="sr-only"> of {c.client} (opens in a new tab)</span></Button>
     </div>
   );
 }
